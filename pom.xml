@@ -19,7 +19,6 @@
     <properties>
         <java.version>17</java.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <spring.boot.version>2.5.2</spring.boot.version>
         <maven.compiler>3.8.1</maven.compiler>
         <zalando.version>0.26.2</zalando.version>
         <fmt.maven.version>2.11</fmt.maven.version>
@@ -199,7 +198,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>
