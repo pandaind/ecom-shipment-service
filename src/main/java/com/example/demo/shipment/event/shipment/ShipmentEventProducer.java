@@ -1,13 +1,6 @@
 package com.example.demo.shipment.event.shipment;
 
-import com.example.demo.order.model.EventStatus;
-import com.example.demo.order.service.OrderService;
-import com.example.demo.order.service.dto.OrderDTO;
-import com.example.demo.shipment.event.order.OrderEvent;
-import com.example.demo.shipment.model.EventStatus;
-import com.example.demo.shipment.model.ShipmentStatus;
 import com.example.demo.shipment.service.ShipmentService;
-import com.example.demo.shipment.service.dto.OrderDTO;
 import com.example.demo.shipment.service.dto.ShipmentDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -65,8 +57,8 @@ public class ShipmentEventProducer {
 
     private void handleSuccess(String key, ShipmentEvent value, SendResult<String, String> result) {
         log.info("Message Sent SuccessFully for the key : {}, partition is {}", key, result.getRecordMetadata().partition());
-        OrderDTO dto = value.getOrder();
-        dto.setEventStatus(EventStatus.SUCCESS);
+        ShipmentDTO dto = value.getShipment();
+        // dto.setEventStatus(EventStatus.SUCCESS);
         this.shipmentService.updateShipment(dto);
     }
 
@@ -74,8 +66,8 @@ public class ShipmentEventProducer {
         log.error("Error Sending the Message with key {} and the exception is {}", key, ex.getMessage());
         try {
             ShipmentDTO dto = value.getShipment();
-            dto.setStatus(ShipmentStatus.);
-            this.shipmentService.updateShipment(dto.);
+            //dto.setStatus(ShipmentStatus.);
+            this.shipmentService.updateShipment(dto);
         } catch (Throwable throwable) {
             log.error("Error in handleFailure: {}", throwable.getMessage());
         }
