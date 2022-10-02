@@ -7,6 +7,14 @@ spring:
     console:
       enabled: true
 
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      group-id: ecom-shipment-service
+      auto-offset-reset: earliest
+
   jpa:
     show-sql: true
     properties:
