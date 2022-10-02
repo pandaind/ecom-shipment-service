@@ -8,20 +8,26 @@ import com.example.demo.shipment.web.rest.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@RefreshScope
 public class ShipmentResource {
     private static final String ENTITY_NAME = "Shipment";
     @Value("${spring.application.name}")
     private String applicationName;
+
+    @Value("${refresh.value}")
+    private String refreshValue;
 
     private final ShipmentService shipmentService;
 
@@ -38,19 +44,11 @@ public class ShipmentResource {
         return ResponseUtil.wrapNotFound(result);
     }
 
-    @PostMapping("/shipments")
-    public ResponseEntity<ShipmentDTO> addShipment(@RequestBody ShipmentDTO shipmentDTO) throws URISyntaxException {
-        log.debug("REST request to save shipment {}", shipmentDTO);
-        if (shipmentDTO.getId() != null) {
-            throw new BadRequestAlertException("A new shipment cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-
-        ShipmentDTO result = this.shipmentService.addShipment(shipmentDTO);
-
-        return ResponseEntity.created(new URI("/shipments" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName,
-                        false, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+    @GetMapping("/shipments")
+    public ResponseEntity<List<ShipmentDTO>> getShipment() {
+        log.debug("REST request to get shipments");
+        var shipments = this.shipmentService.findAll();
+        return ResponseEntity.ok().body(shipments);
     }
 
     @PutMapping("/shipments/{orderId}")
@@ -79,4 +77,8 @@ public class ShipmentResource {
                 .body(result);
     }
 
+    @GetMapping("/shipments/value")
+    public ResponseEntity<String> getRefreshValue() {
+        return ResponseEntity.ok(refreshValue);
+    }
 }
